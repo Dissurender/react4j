@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Container, Form, FormGroup, Input, Label } from "reactstrap";
 import AppNavbar from "./AppNavbar";
+import { useCookies } from "react-cookie";
 
 const GroupEdit = () => {
+
   const initialFormState = {
     name: "",
     address: "",
@@ -13,6 +15,7 @@ const GroupEdit = () => {
     postalCode: "",
   };
   const [group, setGroup] = useState(initialFormState);
+  const [cookies] = useCookies(["XSRF-TOKEN"]);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -33,16 +36,18 @@ const GroupEdit = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    await fetch(`/api/group${group.id ? `/${group.id}` : ""}`, {
-      method: group.id ? "PUT" : "POST",
+    await fetch(`/api/group${group.id ? `/${group.id}` : ''}`, {
+      method: group.id ? 'PUT' : 'POST',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(group),
+      credentials: 'include'
     });
     setGroup(initialFormState);
-    navigate("/groups");
+    navigate('/groups');
   };
 
   const title = <h2>{group.id ? "Edit Group" : "Add Group"}</h2>;

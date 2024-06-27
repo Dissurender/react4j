@@ -1,6 +1,7 @@
 package com.diss.react4j.config;
 
 import com.diss.react4j.config.filter.CookieCsrfFilter;
+import com.diss.react4j.config.filter.SpaWebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,7 @@ public class SecurityConfig {
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
                 )
                 .addFilterAfter(new CookieCsrfFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new SpaWebFilter(), BasicAuthenticationFilter.class)
                 .oauth2Login();
         return http.build();
     }
